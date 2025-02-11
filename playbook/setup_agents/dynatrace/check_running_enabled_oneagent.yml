@@ -1,0 +1,31 @@
+---
+- name: Vérification service oneagent est enabled et running
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Vérifie que le service oneagent est enabled ou disabled
+      command: systemctl is-enabled oneagent
+      register: oneagent_enabled_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: Affiche si le service oneagent est enabled ou disabled
+      debug:
+        msg: "Le service oneagent est : {{ oneagent_enabled_status.stdout }}"
+
+    - name: Vérifie que le service oneagent est en running ou stoppped
+      command: systemctl status oneagent
+      register: oneagent_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: Affiche l'état du service oneagent (running ou stopped)
+      debug:
+        msg: >
+          Status du service oneagent:
+          {% if 'active (running)' in oneagent_status.stdout %}
+            running
+          {% else %}
+            stopped
+          {% endif %}

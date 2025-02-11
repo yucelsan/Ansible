@@ -1,0 +1,26 @@
+---
+- name: Copy local exclusions json files to /etc/opt/microsoft/mdatp/managed/ distant server 
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Copy the local file to the remote server
+      copy:
+        src: ./exclusions_json_files/{{ item }}
+        dest: /etc/opt/microsoft/mdatp/managed/{{ item }}
+        owner: root
+        group: root
+        mode: '0644'
+      with_items:
+        - mdatpglobalexclusions.json
+        - mdatpzone1.json
+
+    - name: Copy the mdavfullscan file to the remote server
+      copy:
+        src: ./{{ item }}
+        dest: /opt/microsoft/{{ item }}
+        owner: root
+        group: root
+        mode: '0744'
+      with_items:
+        - mdavfullscan.sh

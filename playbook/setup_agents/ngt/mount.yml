@@ -1,0 +1,8 @@
+---
+- name: Unmount /mnt on target hosts
+  hosts: "{{ target_hosts }}"
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: mount
+      shell: mount -a

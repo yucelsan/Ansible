@@ -1,0 +1,31 @@
+---
+- name: Vérification service mdatp est enabled et running
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Vérifie que le service mdatp est enabled ou disabled
+      command: systemctl is-enabled mdatp
+      register: mdatp_enabled_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: Affiche si le service mdatp est enabled ou disabled
+      debug:
+        msg: "Le service mdatp est : {{ mdatp_enabled_status.stdout }}"
+
+    - name: Vérifie que le service mdatp est en running ou stoppped
+      command: systemctl status mdatp
+      register: mdatp_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: Affiche l'état du service mdatp (running ou stopped)
+      debug:
+        msg: >
+          Status du service mdatp:
+          {% if 'active (running)' in mdatp_status.stdout %}
+            running
+          {% else %}
+            stopped
+          {% endif %}

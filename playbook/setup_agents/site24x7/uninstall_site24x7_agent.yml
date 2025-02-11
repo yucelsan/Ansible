@@ -1,0 +1,8 @@
+---
+- name: Uninstall site24x7
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+  - name: Uninstall site24x7
+    shell: /opt/site24x7/monagent/bin/uninstall

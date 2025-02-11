@@ -1,0 +1,8 @@
+---
+- name: Activer la protection en temps réel sur mdatp
+  hosts: "{{ target_hosts }}"
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Activer la protection en temps réel
+      shell: mdatp config real-time-protection --value enabled

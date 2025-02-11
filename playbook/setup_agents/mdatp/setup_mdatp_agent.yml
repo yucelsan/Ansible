@@ -1,0 +1,76 @@
+---
+- name: Install MDATP
+  hosts: "{{ target_hosts }}" 
+  become: yes
+  gather_facts: yes
+  tasks:
+  - name: CREATE SCRIPT_POSTINSTALL DIR
+    file:
+      path: "/opt/script_postinstall"
+      state: directory
+
+  - name: CREATE MDATP DIR
+    file:
+      path: "/opt/script_postinstall/MDATP"
+      state: directory
+
+  - name: Install yum-utils
+    shell: yum install yum-utils -y
+
+  - name: YUM-CONFIG-MANAGER
+    shell: yum-config-manager --add-repo=https://packages.microsoft.com/config/rhel/9/prod.repo
+
+  - name: RPM IMPORT MICROSOFT
+    shell: rpm --import http://packages.microsoft.com/keys/microsoft.asc
+    args:
+      chdir: /opt/script_postinstall/MDATP
+
+  - name: INSTALL MDATP
+    shell: yum install mdatp -y
+
+  - name: ENABLE REPO MDATP 
+    shell: yum --enablerepo=packages-microsoft-com-prod install mdatp -y
+  
+  - name: Execute Local Python script to remote server
+    script: /home/yucelsan/ansible/mdatp/MicrosoftDefenderATPOnboardingLinuxServer.py
+    register: script_python
+
+  - name: HOSTNAME DE LA MACHINE
+    shell: hostname
+    register: hostname
+
+  - name: COPY LOCAL SCRIPT PYTHON TO REMOTE SERVER
+    copy:
+      content: "{{ script_python.stdout }}"
+      dest: "/tmp/{{ hostname.stdout }}.txt"
+
+  - name: Copy Sources distantes vers locales serveur Ansible
+    fetch:
+      src: "/tmp/{{ hostname.stdout }}.txt"
+      dest: "/home/yucelsan/ansible/mdatp/scripts/{{ hostname.stdout }}.txt"
+      flat: yes
+
+  - name: CURL EICAR
+    shell: curl -o /opt/script_postinstall/MDATP/eicar.com.txt https://www.eicar.org/download/eicar.com.txt
+    args:
+      chdir: /opt/script_postinstall/MDATP
+
+  - name: MDATP CONFIG 1
+    shell: mdatp health --field org_id 
+  - name: MDATP CONFIG 2
+    shell: mdatp health --field healthy
+  - name: MDATP CONFIG 3
+    shell: mdatp health --field real_time_protection_enabled
+  - name: MDATP CONFIG 4
+    shell: mdatp log level set --level info
+  - name: MDATP CONFIG 5
+    shell: mdatp threat list
+  # - name: MDATP SET PROXY
+  #   shell: mdatp config proxy set --value http://XX.XXX.XX.X:XXXX
+  - name: MDATP VERSION
+    shell: mdatp version
+
+  - name: START MDATP SERVICE
+    shell: systemctl start mdatp
+  - name: MDATP STATUS
+    shell: systemctl status mdatp

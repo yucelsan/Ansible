@@ -1,0 +1,15 @@
+---
+- name: Playbook pour démarrer et activer le service ngt
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Démarrer le service ngt
+      service:
+        name: ngt_guest_agent
+        state: started
+
+    - name: Activer le service ngt au démarrage
+      systemd:
+        name: ngt_guest_agent
+        enabled: yes

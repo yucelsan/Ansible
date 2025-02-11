@@ -1,0 +1,30 @@
+---
+- name: Install ngt
+  hosts: "{{ target_hosts }}"
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Get UUID of NUTANIX_TOOLS
+      shell: blkid -L NUTANIX_TOOLS
+      register: blkid_output
+
+    - name: Mount /dev/sr0 to /mnt
+      shell: mount /dev/sr0 /mnt
+      when: blkid_output.stdout.find('/dev/sr0') != -1
+
+    - name: Install required packages
+      ansible.builtin.yum:
+        name:
+          - dmidecode
+          - tar
+          - chkconfig
+        state: present
+
+    - name: Run setup_python.sh script
+      shell: bash /mnt/installer/linux/setup_python.sh
+      args:
+        executable: /bin/bash
+      when: blkid_output.stdout.find('/dev/sr0') != -1
+
+    - name: Unmount /mnt if it is a mount point
+      shell: umount /mnt

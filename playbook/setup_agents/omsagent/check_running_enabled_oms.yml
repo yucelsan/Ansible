@@ -1,0 +1,31 @@
+---
+- name: Vérification service oms est enabled et running
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Vérifie que le service oms est enabled ou disabled
+      command: systemctl is-enabled omsagent-XXX-XXXX-XXXXX-XXXX
+      register: oms_enabled_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: Affiche si le service oms est enabled ou disabled
+      debug:
+        msg: "L'agent oms est : {{ oms_enabled_status.stdout }}"
+
+    - name: Vérifie que l'agent oms est en running ou stoppped
+      command: systemctl status omsagent-XXX-XXXX-XXXXX-XXXX
+      register: oms_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: Affiche l'état de l'agent oms (running ou stopped)
+      debug:
+        msg: >
+          Status de l'agent oms:
+          {% if 'active (running)' in oms_status.stdout %}
+            running
+          {% else %}
+            stopped
+          {% endif %}

@@ -1,0 +1,47 @@
+---
+- name: Setup les exclusions MDATP
+  hosts: "{{ target_hosts }}"
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Exclusions
+      shell: mdatp exclusion process add --path /opt/Tanium/TaniumClient/TaniumClient
+
+    - name: Exclusions
+      shell: mdatp exclusion process add --path /opt/dynatrace/oneagent/agent/lib64/oneagentwatchdog
+
+    - name: Exclusions
+      shell: mdatp exclusion process add --path /opt/site24x7/monagent/lib/Site24x7AgentWatchdog
+
+    - name: Exclusions
+      shell: mdatp exclusion process add --path /opt/site24x7/monagent/lib/Site24x7Agent
+
+    - name: Exclusions
+      shell: mdatp exclusion process add --path /opt/site24x7/monagent/lib/applog/Site24x7Applog
+
+    - name: Exclusions
+      shell: mdatp exclusion process add --path /opt/omi/bin/omiserver 
+
+    - name: Exclusions
+      shell: mdatp exclusion process add --path /opt/omi/bin/omiengine
+
+    - name: Exclusions
+      shell: mdatp exclusion process add --path /opt/omi/bin/omiagent
+
+    - name: Exclusions
+      shell: mdatp exclusion process add --path /opt/microsoft/omsagent/bin/omsagent
+
+    - name: Exclusions
+      shell: mdatp exclusion folder add --path /proc
+
+    - name: Exclusions
+      shell: mdatp exclusion folder add --path /sys
+
+    - name: Exclusions
+      shell: mdatp exclusion folder add --path /dev
+
+    - name: Exclusions
+      shell: mdatp exclusion process add --path /opt/java/jdk8u412-b08/jre/bin/java
+
+    - name: Exclusions
+      shell: mdatp exclusion process add --path /opt/java/jdk8u412-b08/bin/java

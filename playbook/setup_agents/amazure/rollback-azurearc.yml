@@ -1,0 +1,31 @@
+---
+- name: Uninstall azcmagent on Linux servers
+  hosts: "{{ target_hosts }}"  # Définir les hôtes cibles
+  become: yes  # Exécuter les tâches avec des privilèges élevés
+
+  tasks:
+    - name: Disconnect azcmagent
+      shell: /opt/azcmagent/bin/azcmagent disconnect
+
+    - name: Remove azcmagent
+      shell: /opt/azcmagent/bin/azcmagent remove
+
+    - name: Uninstall azcmagent
+      shell: yum remove azcmagent -y
+
+    - name: Uninstall azcmagent on RHEL/CentOS
+      ansible.builtin.yum:
+        name: azcmagent
+        state: absent
+      when: ansible_facts['os_family'] == 'RedHat'
+
+    - name: Remove residual directories if any
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /opt/azcmagent
+        - /etc/opt/azcmagent
+
+    - name: Remove azcmagent directories
+      shell: rm -rf /opt/azcmagent /etc/opt/azcmagent

@@ -1,0 +1,35 @@
+---
+- hosts: "{{ target_hosts }}"
+  gather_facts: yes
+  become: yes
+  tasks:
+
+  - name: Check du répertoire Microsoft  
+    stat:
+      path: "/opt/microsoft"
+    register: mcrsft_dir
+
+  - name: If Dir not exist create Dir  
+    file:
+      path: "/opt/microsoft"
+      state: directory
+    when: not mcrsft_dir.stat.exists
+
+  - name: Download Script Onboard OMS Agent  
+    shell: wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh
+    args:
+      chdir: /opt/microsoft
+
+  - name: STOP OMS Agent  
+    shell: /opt/microsoft/omsagent/bin/service_control stop
+
+  - name: DISABLE OMS Agent
+    shell: /opt/microsoft/omsagent/bin/service_control disable
+
+  - name: PURGE DELETE OMS Agent  
+    shell: 'sh ./onboard_agent.sh --purge'
+    args:
+      chdir: /opt/microsoft
+
+  - name: UNINSTALL & REMOVE OMS Agent, OMS CONFIG, SCX
+    shell: yum remove omsagent omsconfig scx -y

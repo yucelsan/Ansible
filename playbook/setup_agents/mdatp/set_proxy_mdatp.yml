@@ -1,0 +1,15 @@
+---
+- name: Set proxy mdatp
+  hosts: "{{ target_hosts }}"
+  gather_facts: yes
+  become: yes
+  tasks:
+
+  # - name: MDATP SET PROXY
+  #   shell: mdatp config proxy set --value http://XX.XXX.XX.X:XXXX
+
+  # - name: RESTART MDATP SERVICE
+  #   shell: systemctl restart mdatp
+
+  # - name: MDATP STATUS
+  #   shell: systemctl enable mdatp

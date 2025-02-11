@@ -1,0 +1,48 @@
+---
+- name: Install Tanium
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+
+  - name: CREATE SCRIP_POSTINSTALL DIR
+    file:
+      path: "/opt/script_postinstall"
+      state: directory
+
+  - name: CREATE Tanium DIR
+    file:
+      path: "/opt/script_postinstall/Tanium"
+      state: directory
+
+  - name: Install zip 
+    shell: yum install zip -y
+
+  - name: COPY LINUX BUNDLE
+    copy:
+      src: "./linux-client-bundle.zip"
+      dest: "/opt/script_postinstall/Tanium"
+
+  - name: UNZIP FILE IN REMOTE SERVER
+    shell: unzip linux-client-bundle.zip
+    args:
+      chdir: /opt/script_postinstall/Tanium
+
+  - name: CHMOD +X INSTALL.SH
+    shell: chmod +x ./install.sh
+    args:
+      chdir: /opt/script_postinstall/Tanium
+
+  - name: INSTALLATION TANIUM
+    shell: ./install.sh
+    args:
+      chdir: /opt/script_postinstall/Tanium
+
+  # - name: PROXY
+  #   shell: /opt/Tanium/TaniumClient/TaniumClient config set-string ProxyServers "XX.XXX.XX.X:XXXX"
+    
+  - name: START TANIUM SERVICE
+    shell: systemctl start taniumclient
+
+  - name: ENABLE TANIUM SERVICE
+    shell: systemctl enable taniumclient

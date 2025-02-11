@@ -1,0 +1,31 @@
+---
+- name: Vérification service taniumclient est enabled et running
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Vérifie que le service taniumclient est enabled ou disabled
+      command: systemctl is-enabled taniumclient
+      register: taniumclient_enabled_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: Affiche si le service taniumclient est enabled ou disabled
+      debug:
+        msg: "Le service taniumclient est : {{ taniumclient_enabled_status.stdout }}"
+
+    - name: Vérifie que le service taniumclient est en running
+      command: systemctl status taniumclient
+      register: taniumclient_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: Affiche l'état du service taniumclient (running ou stoppped)
+      debug:
+        msg: >
+          Status du service taniumclient:
+          {% if 'active (running)' in taniumclient_status.stdout %}
+            running
+          {% else %}
+            stopped
+          {% endif %}

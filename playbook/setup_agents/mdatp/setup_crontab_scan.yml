@@ -1,0 +1,17 @@
+---
+- name: Ensure cron job exists in /etc/crontab
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Check if the cron job already exists
+      command: grep -q '^0 5 \* \* \* root /opt/microsoft/mdavfullscan.sh$' /etc/crontab
+      register: cron_job_exists
+      ignore_errors: true
+
+    - name: Add cron job to /etc/crontab if it doesn't exist
+      lineinfile:
+        path: /etc/crontab
+        line: '0 5 * * * root /opt/microsoft/mdavfullscan.sh'
+        state: present
+      when: cron_job_exists.rc != 0

@@ -1,0 +1,26 @@
+{
+    "antivirusEngine":{
+       "exclusionsMergePolicy":"merge",
+       "exclusions":[
+          {
+             "$type":"excludedPath",
+             "isDirectory":true,
+             "path":"/opt/site24x7"
+          },          
+          {
+             "$type":"excludedPath",
+             "isDirectory":true,
+             "path":"/opt/Tanium"
+          },          
+          {
+             "$type":"excludedPath",
+             "isDirectory":true,
+             "path":"/opt/Tanium/*/"
+          },
+          {
+             "$type":"excludedFileName",
+             "name":"/opt/Tanium/TaniumClient/TaniumClient"
+          }  
+       ]
+    }
+}

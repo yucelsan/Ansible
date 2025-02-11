@@ -1,0 +1,51 @@
+---
+- name: Install site24x7
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+  - name: If POST INSTALL Dir not exist create Dir
+    file:
+      path: "/opt/script_postinstall"
+      state: directory
+
+  - name: CREATE SITE24X7 DIR
+    file:
+      path: "/opt/script_postinstall/Site24X7"
+      state: directory
+
+  - name: Download SITE24X7 INSTALL SCRIPT
+    shell: wget https://staticdownloads.site24x7.com/server/Site24x7InstallScript.sh
+    args:
+      chdir: /opt/script_postinstall/Site24X7
+
+  - name: CHMOD +X SCRIPT
+    shell: chmod +x ./Site24x7InstallScript.sh
+    args:
+      chdir: /opt/script_postinstall/Site24X7
+
+  - name: INSTALL SCRIPT SITE24X7
+    shell: bash ./Site24x7InstallScript.sh -i -key=us_XXXXXXXXXXXXXXXXXXXXXXXXX -automation=true
+    args:
+      chdir: /opt/script_postinstall/Site24X7
+
+  # - name: PROXY LINE REPLACE CONFIG FILE SITE24X7
+  #   lineinfile:
+  #     path: /opt/site24x7/monagent/conf/monagent.cfg
+  #     regexp: '^proxy_server_name ='
+  #     line: proxy_server_name = XX.XXX.XX.X
+
+  # - name: PORT PROXY LINE REPLACE CONFIG FILE SITE24X7
+  #   lineinfile:
+  #     path: /opt/site24x7/monagent/conf/monagent.cfg
+  #     regexp: '^proxy_server_port ='
+  #     line: proxy_server_port = XXXX
+
+  # - name: PROXY PROTOCOL LINE REPLACE CONFIG FILE SITE24X7
+  #   lineinfile:
+  #     path: /opt/site24x7/monagent/conf/monagent.cfg
+  #     regexp: '^proxy_server_protocol ='
+  #     line: proxy_server_protocol = http
+
+  - name: RESTART AGENT SITE24X7
+    shell: /opt/site24x7/monagent/bin/monagentservice start

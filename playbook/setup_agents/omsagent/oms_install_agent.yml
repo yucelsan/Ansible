@@ -1,0 +1,51 @@
+---
+- hosts: "{{ target_hosts }}"
+  ignore_unreachable: true
+  gather_facts: false
+  become: yes
+  remote_user: root
+  #vars_files:
+  #- vault_passwd/vaultpasswd_secret.yml
+  tasks:
+
+  - name: Check du répertoire Microsoft  
+    stat:
+      path: "/opt/microsoft"
+    register: mcrsft_dir
+
+  - name: If Dir not exist create Dir  
+    file:
+      path: "/opt/microsoft"
+      state: directory
+    when: not mcrsft_dir.stat.exists
+
+  - name: UNINSTALL OMS Agent  
+    shell: 'sh ./onboard_agent.sh --purge'
+    args:
+      chdir: /opt/microsoft
+
+  - name: Download Script Onboard OMS Agent  
+    shell: wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh
+    args:
+      chdir: /opt/microsoft
+
+  - name: Execute Script Onboard OMS Agent  
+    shell: 'sh ./onboard_agent.sh -w XXXXX-XXXX-XXXX-XXXX -s XXXXX-XXXXX -d opinsights.azure.com -p http://XX.XXX.XX.X:XXXX'
+    args:
+      chdir: /opt/microsoft
+
+  - name: Verify status Onboard OMS Agent
+    command: systemctl status omsagent-XXX-XXX-XXXX.service
+
+  - name: wget security_events.conf file from microsoft repository  
+    ansible.builtin.get_url:
+      url: https://raw.githubusercontent.com/microsoft/OMS-Agent-for-Linux/master/installer/conf/omsagent.d/security_events.conf
+      dest: /etc/opt/microsoft/omsagent/XXX-XXX-XXXX/conf/omsagent.d/security_events.conf
+
+  - name: restart rsyslog  
+    command: service rsyslog restart
+
+  - name: Restart OMS Agent  
+    command: /opt/microsoft/omsagent/bin/service_control restart XXX-XXX-XXXX
+
+    

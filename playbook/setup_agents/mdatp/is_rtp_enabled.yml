@@ -1,0 +1,17 @@
+---
+- name: Vérification de la protection en temps réel sur mdatp
+  hosts: "{{ target_hosts }}"
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Exécuter la commande mdatp health
+      shell: mdatp health
+      register: mdatp_health_output
+
+    - name: Extraire la ligne real_time_protection_enabled
+      set_fact:
+        real_time_protection: "{{ mdatp_health_output.stdout_lines | select('search', 'real_time_protection_enabled') | list | first | regex_replace('\\s+', ' ') }}"
+
+    - name: Afficher la ligne real_time_protection_enabled
+      debug:
+        msg: "{{ real_time_protection }}"

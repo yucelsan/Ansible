@@ -1,0 +1,25 @@
+---
+- name: Unmount /mnt on target hosts
+  hosts: "{{ target_hosts }}"
+  become: yes
+  tasks:
+    - name: Check if /mnt is a mount point
+      ansible.builtin.command: mountpoint -q /mnt
+      register: mnt_check
+      ignore_errors: true  # Ignore errors to handle the case where /mnt is not a mount point
+
+    - name: Unmount /mnt if it is a mount point
+      ansible.builtin.command: umount /mnt
+      when: mnt_check.rc == 0  # Only unmount if /mnt is a mount point
+      ignore_errors: true  # Optionally ignore errors if umount fails
+
+    - name: Verify /mnt is unmounted
+      ansible.builtin.command: mountpoint -q /mnt
+      register: verify_unmount
+      failed_when: verify_unmount.rc == 0  # Fail the play if /mnt is still a mount point
+      ignore_errors: true  # Optionally ignore errors to continue with other tasks
+
+    - name: Debug output
+      ansible.builtin.debug:
+        msg: "Unmounted /mnt successfully."
+      when: verify_unmount.rc != 0  # Display success message only if /mnt is unmounted

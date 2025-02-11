@@ -1,0 +1,16 @@
+---
+- name: Exécuter un script Bash en arrière-plan
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Lancer le script en arrière-plan
+      command: "/opt/microsoft/mdavfullscan.sh &"
+      async: 1
+      poll: 0
+      ignore_errors: true
+      register: result
+
+    - name: Afficher le statut du lancement
+      debug:
+        msg: "Le script a été lancé en arrière-plan avec le job ID {{ result.ansible_job_id }}"

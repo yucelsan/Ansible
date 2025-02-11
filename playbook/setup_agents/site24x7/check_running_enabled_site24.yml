@@ -1,0 +1,21 @@
+---
+- name: Vérification service site24 est enabled et running
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Vérifie que le service monagent est en running ou stopped
+      command: /opt/site24x7/monagent/bin/monagentservice status
+      register: monagent_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: Afficher l'état du service monagent
+      debug:
+        msg: >
+          Status du service monagent:
+          {% if 'Site24x7 monitoring agent service is up' in monagent_status.stdout %}
+            running
+          {% else %}
+            stopped
+          {% endif %}

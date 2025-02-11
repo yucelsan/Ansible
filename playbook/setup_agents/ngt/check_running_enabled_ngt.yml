@@ -1,0 +1,31 @@
+---
+- name: Vérification service ngt_guest_agent est enabled et running
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Vérifie que le service ngt_guest_agent est enabled ou disabled
+      command: systemctl is-enabled ngt_guest_agent
+      register: ngt_guest_agent_enabled_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: Affiche si le service ngt_guest_agent est enabled ou disabled
+      debug:
+        msg: "Le service ngt_guest_agent est : {{ ngt_guest_agent_enabled_status.stdout }}"
+
+    - name: Vérifie que le service ngt_guest_agent est en running ou stoppped
+      command: systemctl status ngt_guest_agent
+      register: ngt_guest_agent_status
+      changed_when: false
+      ignore_errors: true
+
+    - name: Affiche l'état du service ngt_guest_agent (running ou stopped)
+      debug:
+        msg: >
+          Status du service ngt_guest_agent:
+          {% if 'active (running)' in ngt_guest_agent_status.stdout %}
+            running
+          {% else %}
+            stopped
+          {% endif %}

@@ -1,0 +1,14 @@
+---
+- hosts: "{{ target_hosts }}"
+  ignore_unreachable: true
+  gather_facts: false
+  become: yes
+  remote_user: root
+  #vars_files:
+  #- vaultpasswd/vaultpasswd_secret.yml
+  tasks:
+
+  - name: CLEAN DIRECTORY AFTER INSTALLATION
+    shell: 'rm -f onboard_agent* omsagent-1*'
+    args:
+      chdir: /opt/microsoft
