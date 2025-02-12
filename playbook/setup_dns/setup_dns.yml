@@ -1,0 +1,31 @@
+---
+- name: Configure DNS with nmcli
+  hosts: "{{ target_hosts }}"
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Check if interface ens3 exists
+      command: ip link show ens3
+      register: ens3_check
+      ignore_errors: yes
+
+    - name: Check if interface ens7 exists
+      command: ip link show ens7
+      register: ens7_check
+      ignore_errors: yes
+
+    - name: Debug ens3_check to see the output
+      debug:
+        var: ens3_check
+
+    - name: Debug ens7_check to see the output
+      debug:
+        var: ens7_check
+
+    - name: Configure ens3 interface if it exists
+      when: "'does not exist' not in ens3_check.stdout"
+      command: nmcli connection modify ens3_static ipv4.dns "10.192.XX.X,10.192.XX.X" ipv4.dns-search yucelsan.fr
+
+    - name: Configure ens7 interface if it exists
+      when: "'does not exist' not in ens7_check.stdout"
+      command: nmcli connection modify ens7_static ipv4.dns "10.192.XX.X,10.192.XX.X" ipv4.dns-search yucelsan.fr

@@ -1,0 +1,94 @@
+---
+- name: Remove proxy configurations from the system
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+  
+    - name: Remove proxy configuration from /etc/dnf/dnf.conf
+      lineinfile:
+        path: /etc/dnf/dnf.conf
+        regexp: '^proxy='
+        state: absent
+
+    - name: Remove proxy settings from /etc/environment
+      file:
+        path: /etc/environment
+        state: absent
+
+    - name: Remove /etc/profile.d/proxy.sh if it exists
+      file:
+        path: /etc/profile.d/proxy.sh
+        state: absent
+
+    # ### mdatp
+    # - name: Remove proxy configuration from mdatp agent
+    #   shell: mdatp config proxy reset
+
+    # ### tanium
+    # - name: Remove proxy configuration from Tanium agent
+    #   shell: /opt/Tanium/TaniumClient/TaniumClient config set-string ProxyServers ""
+
+    # ### Site24x7
+    # - name: Sauvegarder le fichier monagent.cfg
+    #   copy:
+    #     src: /opt/site24x7/monagent/conf/monagent.cfg
+    #     dest: /opt/site24x7/monagent/conf/monagent.cfg.bak
+    #     backup: yes
+
+    # - name: Nettoyer les valeurs après le "=" dans monagent.cfg
+    #   replace:
+    #     path: /opt/site24x7/monagent/conf/monagent.cfg
+    #     regexp: '^(proxy_server_(name|port|protocol) = ).*$'
+    #     replace: '\1'
+
+    # ### OMS AGENT
+    # - name: Sauvegarder le fichier proxy.conf
+    #   copy:
+    #     src: /etc/opt/microsoft/omsagent/proxy.conf
+    #     dest: /etc/opt/microsoft/omsagent/proxy.conf.bak
+    #     backup: yes
+
+    # - name: Remove proxy configuration from /etc/opt/microsoft/omsagent/proxy.conf
+    #   shell: echo "" > /etc/opt/microsoft/omsagent/proxy.conf
+
+    # ### DYNATRACE ONEAGENT
+    # - name: Sauvegarder le fichier oneagent.conf
+    #   copy:
+    #     src: /opt/dynatrace/oneagent/agent/conf/oneagent.conf
+    #     dest: /opt/dynatrace/oneagent/agent/conf/oneagent.conf.bak
+    #     backup: yes
+
+    # - name: Ensure the Proxy line is uncommented and empty
+    #   lineinfile:
+    #     path: /opt/dynatrace/oneagent/agent/conf/oneagent.conf
+    #     regexp: '^#?Proxy.*'
+    #     line: 'Proxy'
+    #     state: present
+
+    # - name: Ensure file permissions are correct for Dynatrace oneagent conf file
+    #   file:
+    #     path: /opt/dynatrace/oneagent/agent/conf/oneagent.conf
+    #     owner: root
+    #     group: dtuser
+    #     mode: '0644'
+
+    # ### tanium
+    # - name: Restart Tanium agent
+    #   shell: systemctl restart taniumclient
+
+    # ### Site24X7
+    # - name: Restart Site24X7 agent
+    #   shell: /opt/site24x7/monagent/bin/monagentservice restart
+
+    # ### MDATP
+    # - name: Restart Microsoft Defender agent
+    #   shell: systemctl restart mdatp
+
+    # ### OMS AGENT
+    # - name: Restart Microsoft OMS agent
+    #   shell: /opt/microsoft/omsagent/bin/service_control restart 
+
+    # ### dynatrace
+    # - name: Restart Dynatrace oneagent
+    #   shell: systemctl restart oneagent

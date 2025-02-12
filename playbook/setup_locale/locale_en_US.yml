@@ -1,0 +1,21 @@
+---
+- name: Configure en_US.UTF-8 locale on RHEL 9
+  hosts: "{{ target_hosts }}"
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Ensure /etc/locale.conf exists and set LANG to en_US.UTF-8
+      lineinfile:
+        path: /etc/locale.conf
+        regexp: '^LANG='
+        line: 'LANG=en_US.UTF-8'
+        create: yes
+
+    - name: Install required locales package
+      package:
+        name: glibc-langpack-en
+        state: present
+      become: yes
+
+    - name: Set system locale to en_US.UTF-8 using localectl
+      command: localectl set-locale LANG=en_US.UTF-8

@@ -1,0 +1,24 @@
+---
+- name: Copy file to remote servers
+  hosts: "{{ target_hosts }}"
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Copy proxy.sh to /etc/profile.d/
+      copy:
+        src: ./proxy.sh  # Chemin local du fichier source
+        dest: /etc/profile.d/proxy.sh    # Destination sur les serveurs distants
+        mode: 0755  # Permission du fichier
+
+    - name: Copy proxy.sh to /etc/profile.d/
+      copy:
+        src: ./proxy.sh  # Chemin local du fichier source
+        dest: /etc/environment    # Destination sur les serveurs distants
+        mode: 0755  # Permission du fichier
+
+    - name: Ajouter la ligne proxy dans /etc/dnf/dnf.conf
+      lineinfile:
+        path: /etc/dnf/dnf.conf
+        insertafter: '[main]'
+        line: 'proxy=http://XX.XXX.XX.X:XXXX'
+        state: present

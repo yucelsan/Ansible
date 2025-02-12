@@ -1,0 +1,80 @@
+---
+- name: rollback proxy configurations from the system
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    ### dnf.conf
+    # - name: renomer le fichier dnf.conf
+    #   shell: mv /etc/dnf/dnf.conf /etc/dnf/dnf.conf.backup
+
+    # - name: restore le fichier dnf
+    #   shell: mv /etc/dnf/dnf.conf.bak /etc/dnf/dnf.conf
+
+#     ### environment file
+#     - name: rename le fichier environment
+#       shell: mv /etc/environment /etc/environment.backup
+
+#     - name: restore le fichier environment
+#       shell: mv /etc/environment.bak /etc/environment
+
+#     ### proxy.sh
+# #    - name: Restore le fichier proxy.sh
+# #      shell: mv /etc/profile.d/proxy.sh.bak /etc/profile.d/proxy.sh
+
+#     ### mdatp
+#     - name: Restore proxy configuration from mdatp agent
+#       shell: mdatp config proxy set --value http://XX.XXX.XX.X:XXXX
+
+#     ### tanium
+#     - name: Restore proxy configuration from Tanium agent
+#       shell: /opt/Tanium/TaniumClient/TaniumClient config set-string ProxyServers "XX.XXX.XX.X:XXXX"
+
+#     ### Site24x7
+#     - name: rename le fichier monagent.cfg
+#       shell: mv /opt/site24x7/monagent/conf/monagent.cfg /opt/site24x7/monagent/conf/monagent.cfg.backup
+
+#     - name: restore le fichier monagent.cfg
+#       shell: mv /opt/site24x7/monagent/conf/monagent.cfg.bak /opt/site24x7/monagent/conf/monagent.cfg
+
+#     ### OMS AGENT
+#     - name: Supprime le fichier proxy.conf qui est censé être vide
+#       shell: rm -f /etc/opt/microsoft/omsagent/proxy.conf
+
+#     - name: Restore proxy configuration
+#       shell: mv /etc/opt/microsoft/omsagent/proxy.conf.bak /etc/opt/microsoft/omsagent/proxy.conf
+
+#     ### DYNATRACE ONEAGENT
+#     - name: Ensure the Proxy line is commented
+#       lineinfile:
+#         path: /opt/dynatrace/oneagent/agent/conf/oneagent.conf
+#         regexp: '^Proxy.*'
+#         line: '#Proxy'
+#         state: present
+
+#     - name: Ensure file permissions are correct for Dynatrace oneagent conf file
+#       file:
+#         path: /opt/dynatrace/oneagent/agent/conf/oneagent.conf
+#         owner: root
+#         group: dtuser
+#         mode: '0644'
+
+#     ### tanium
+#     - name: Restart Tanium agent
+#       shell: systemctl restart taniumclient
+
+#     ### Site24X7
+#     - name: Restart Site24X7 agent
+#       shell: /opt/site24x7/monagent/bin/monagentservice restart
+
+#     ### MDATP
+#     - name: Restart Microsoft Defender agent
+#       shell: systemctl restart mdatp
+
+#     ### OMS AGENT
+#     - name: Restart Microsoft OMS agent
+#       shell: /opt/microsoft/omsagent/bin/service_control restart 
+
+#     ### dynatrace
+#     - name: Restart Dynatrace oneagent
+#       shell: systemctl restart oneagent

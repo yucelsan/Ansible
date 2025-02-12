@@ -1,0 +1,11 @@
+---
+- name: Change hostname # Pour executer : ansible-playbook setup_hostname.yml --extra-vars "ansible_play_batch.name=YucelsanHost"
+  hosts: "{{ target_hosts }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Set hostname to the value passed via CLI
+      hostname:
+        name: "{{ new_hostname }}"
+      vars:
+        new_hostname: "{{ ansible_play_batch.name }}"
