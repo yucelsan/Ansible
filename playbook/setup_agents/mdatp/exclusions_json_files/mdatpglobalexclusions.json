@@ -1,6 +1,6 @@
-# - ANSIBLE PLAYBOOK
-# - AUTHOR : SERDAR AYSAN
-# - COMPANY : YUCELSAN
+// - ANSIBLE PLAYBOOK
+// - AUTHOR : SERDAR AYSAN
+// - COMPANY : YUCELSAN
 {
     "antivirusEngine":{
        "exclusionsMergePolicy":"merge",
