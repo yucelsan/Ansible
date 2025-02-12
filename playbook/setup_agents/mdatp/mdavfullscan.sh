@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# - ANSIBLE PLAYBOOK
+# - AUTHOR : SERDAR AYSAN
+# - COMPANY : YUCELSAN
+
 # Génère un délai aléatoire entre 0 et 1200 secondes (20 minutes)
 DELAY=$((RANDOM % 1200))
 

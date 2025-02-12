@@ -1,3 +1,6 @@
+# - ANSIBLE PLAYBOOK
+# - AUTHOR : SERDAR AYSAN
+# - COMPANY : YUCELSAN
 ---
 - name: Activer la protection en temps réel sur mdatp
   hosts: "{{ target_hosts }}"

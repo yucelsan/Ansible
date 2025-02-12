@@ -1,3 +1,6 @@
+# - ANSIBLE PLAYBOOK
+# - AUTHOR : SERDAR AYSAN
+# - COMPANY : YUCELSAN
 ---
 - name: Exécuter un script Bash en arrière-plan
   hosts: "{{ target_hosts }}"

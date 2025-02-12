@@ -1,3 +1,6 @@
+# - ANSIBLE PLAYBOOK
+# - AUTHOR : SERDAR AYSAN
+# - COMPANY : YUCELSAN
 ---
 - name: Vérification service ngt_guest_agent est enabled et running
   hosts: "{{ target_hosts }}"

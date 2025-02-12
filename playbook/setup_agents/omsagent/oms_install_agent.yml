@@ -1,3 +1,6 @@
+# - ANSIBLE PLAYBOOK
+# - AUTHOR : SERDAR AYSAN
+# - COMPANY : YUCELSAN
 ---
 - hosts: "{{ target_hosts }}"
   ignore_unreachable: true

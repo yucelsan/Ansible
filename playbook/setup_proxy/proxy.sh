@@ -1,3 +1,6 @@
+# - ANSIBLE PLAYBOOK
+# - AUTHOR : SERDAR AYSAN
+# - COMPANY : YUCELSAN
 # set proxy config via profile.d - should apply for all users
 
 # http/https/ftp/no_proxy

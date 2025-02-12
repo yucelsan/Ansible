@@ -1,3 +1,6 @@
+# - ANSIBLE PLAYBOOK
+# - AUTHOR : SERDAR AYSAN
+# - COMPANY : YUCELSAN
 ---
 - name: Uninstall site24x7
   hosts: "{{ target_hosts }}"

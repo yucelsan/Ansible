@@ -1,3 +1,6 @@
+# - ANSIBLE PLAYBOOK
+# - AUTHOR : SERDAR AYSAN
+# - COMPANY : YUCELSAN
 ---
 - name: Playbook pour démarrer et activer le service ngt
   hosts: "{{ target_hosts }}"
