@@ -28,6 +28,7 @@ kubectl delete -f "${WORKDIR}/awx-instance.yaml"      --ignore-not-found=true ||
 kubectl delete -f "${WORKDIR}/awx-admin-password.yaml" --ignore-not-found=true || true
 kubectl -n "${AWX_NAMESPACE}" delete secret awx-tls --ignore-not-found=true || true
 kubectl delete -f "${WORKDIR}/external-postgres-configuration.yaml" --ignore-not-found=true || true
+kubectl delete -f "${WORKDIR}/awx-volume.yaml" --ignore-not-found=true || true
 
 echo "[+] AWX Operator & namespace"
 
