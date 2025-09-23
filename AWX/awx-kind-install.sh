@@ -62,6 +62,19 @@ mkdir -p "${WORKDIR}"
 echo "[i] Manifests: ${WORKDIR}"
 ### ====================================================
 
+### Dossier ansible (playbooks)
+ANSIBLE="${ANSIBLE:-/ansible}"
+mkdir -p "${ANSIBLE}"
+echo "[i] Répertoire ansible : ${ANSIBLE}"
+### ====================================================
+
+if [ ! -d /ansible ]; then
+    # Créer le répertoire si nécessaire
+    mkdir -p /ansible
+    # Assigner les permissions
+    chmod 755 /ansible
+fi
+
 ### Téléchargement de kubectl...
 command -v kubectl >/dev/null 2>&1 || {
   curl -fsSL -o /usr/local/bin/kubectl \
@@ -453,13 +466,6 @@ done
 
 ### === Config NFS pour AWX ===
 echo "[INFO] Configuration du partage NFS /ansible ..."
-
-if [ ! -d /ansible ]; then
-    # Créer le répertoire si nécessaire
-    mkdir -p /ansible
-    # Assigner les permissions
-    chmod 755 /ansible
-fi
 
 ### Activer le service NFS
 systemctl enable --now nfs-server
