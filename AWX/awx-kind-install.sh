@@ -82,7 +82,7 @@ command -v kubectl >/dev/null 2>&1 || {
   chmod +x /usr/local/bin/kubectl
 }
 
-### Téléchargement de kind...
+### Téléchargement de Helm & Kind...
 command -v helm >/dev/null 2>&1 || curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 if ! command -v kind >/dev/null 2>&1; then
   curl -fsSL -o /usr/local/bin/kind \
