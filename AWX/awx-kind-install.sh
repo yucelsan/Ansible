@@ -90,6 +90,26 @@ if ! command -v kind >/dev/null 2>&1; then
   chmod +x /usr/local/bin/kind
 fi
 
+# Vérifier si nginx est installé
+if command -v nginx >/dev/null 2>&1; then
+    echo "Nginx est déjà installé."
+else
+    echo "Nginx n'est pas installé. Installation en cours..."
+
+    # Vérifier si dnf est disponible sinon fallback sur yum
+    if command -v dnf >/dev/null 2>&1; then
+        sudo dnf install -y nginx
+    else
+        sudo yum install -y nginx
+    fi
+
+    # Activer et démarrer le service nginx
+    sudo systemctl enable nginx
+    sudo systemctl start nginx
+
+    echo "Nginx a été installé et démarré."
+fi
+
 ### Cluster kind (ports exposés en loopback)
 KIND_CFG="${WORKDIR}/kind-config.yaml"
 cat > "${KIND_CFG}" <<EOF
