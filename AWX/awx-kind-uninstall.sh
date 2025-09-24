@@ -10,6 +10,8 @@
 # Ce script a déjà été testé sur Redhat 10
 # --------------------------------------------------------------------------------------
 
+cd /opt
+
 CLUSTER_NAME="${CLUSTER_NAME:-awx}"
 AWX_NAMESPACE="${AWX_NAMESPACE:-awx}"
 AWX_OPERATOR_VERSION="${AWX_OPERATOR_VERSION:-2.19.1}"
