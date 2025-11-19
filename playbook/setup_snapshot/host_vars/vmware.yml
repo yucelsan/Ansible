@@ -1,0 +1,7 @@
+#********* CE FICHIER DOIT ETRE CRYPTE AVEC ANSIBLE-VAULT *********#
+#********* ansible-vault encrypt host_vars/vmware.yml *********#
+
+vcenter_hostname: "vcenter.yucelsan.local"
+vcenter_username: "root@yucelsan.local"
+vcenter_password: "*******************"
+vcenter_datacenter: "YN-Datacenter"
