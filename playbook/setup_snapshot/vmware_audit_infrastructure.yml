@@ -1,0 +1,59 @@
+# Pour executer ce playbook avec le fichier crypté host_vars/vmware.yml 
+# ansible-playbook vmware_audit_infrastructure.yml --ask-vault-pass
+
+---
+- name: Audit complet VMware (READ-ONLY, YUCELSAN)
+  hosts: localhost
+  gather_facts: false
+
+  collections:
+    - community.vmware
+
+  vars_files:
+    - host_vars/vmware.yml
+
+  vars:
+    report_output_json: "reports/vmware_audit_report.json"
+    report_output_html: "reports/vmware_audit_report.html"
+
+  tasks:
+    - name: Lister toutes les VMs
+      vmware_vm_info:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: false
+      register: vm_info
+      delegate_to: localhost
+
+    - name: Lister les datastores
+      vmware_datastore_info:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: false
+      register: datastore_info
+      delegate_to: localhost
+
+
+    - name: Générer le rapport d’audit VMware en JSON
+      copy:
+        dest: "{{ report_output_json }}"
+        content: |
+          {
+            "vms": {{ vm_info.virtual_machines | to_nice_json }},
+            "datastores": {{ datastore_info.datastores | to_nice_json }}
+          }
+      delegate_to: localhost
+
+    - name: Générer le rapport d’audit VMware en HTML
+      template:
+        src: "templates/vmware_audit_report.html.j2"
+        dest: "{{ report_output_html }}"
+      delegate_to: localhost
+
+    - name: Afficher les chemins des rapports
+      debug:
+        msg:
+          - "Rapport JSON : {{ report_output_json }}"
+          - "Rapport HTML : {{ report_output_html }}"

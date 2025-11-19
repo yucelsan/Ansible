@@ -1,0 +1,39 @@
+# Pour executer ce playbook avec le fichier crypté host_vars/vmware.yml 
+# ansible-playbook vmware_delete_snapshot.yml --ask-vault-pass
+
+---
+- name: Suppression d'un snapshot VMware pour une VM spécifique
+  hosts: localhost
+  gather_facts: false
+
+  collections:
+    - community.vmware
+
+  vars_files:
+    - host_vars/vmware.yml   # même fichier Vault que pour la création
+
+  vars:
+    vm_name: "VM-ANS-V04"
+    vm_folder: "/YN-Datacenter/vm/Serveurs-Linux"
+
+    snapshot_name: "snapshot-avant-maintenance"
+    # Si le snapshot a des enfants :
+    # - false = ne supprime que ce snapshot (fail si enfants)
+    # - true  = supprime aussi tous les snapshots enfants
+    remove_children: false
+
+  tasks:
+    - name: Supprimer le snapshot {{ snapshot_name }} pour {{ vm_name }}
+      vmware_guest_snapshot:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: false
+        datacenter: "{{ vcenter_datacenter }}"
+        folder: "{{ vm_folder }}"
+        name: "{{ vm_name }}"
+        state: absent
+        snapshot_name: "{{ snapshot_name }}"
+        remove_children: "{{ remove_children }}"
+      delegate_to: localhost
+

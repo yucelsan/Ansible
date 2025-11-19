@@ -1,0 +1,39 @@
+# Pour executer ce playbook avec le fichier crypté host_vars/vmware.yml 
+# ansible-playbook vmlist_delete_snapshots.yml --ask-vault-pass
+
+---
+- name: Suppression du snapshot sur plusieurs VMs Linux & Windows
+  hosts: localhost
+  gather_facts: false
+
+  collections:
+    - community.vmware
+
+  vars_files:
+    - host_vars/vmware.yml
+
+  vars:
+    vm_list:
+      - { name: "VM-ANS-V04", folder: "/YN-Datacenter/vm/Serveurs-Linux" }
+      - { name: "VM-WORKFLOW-PRD", folder: "/YN-Datacenter/vm/Serveurs-Windows" }
+      - { name: "VM-WEB-V01", folder: "/YN-Datacenter/vm/Serveurs-Linux" }
+
+    snapshot_name: "snapshot-avant-maintenance"
+    remove_children: false
+    # mettre remove_children: true si tu veux supprimer aussi les snapshots enfants
+
+  tasks:
+    - name: Supprimer le snapshot {{ snapshot_name }} pour chaque VM
+      vmware_guest_snapshot:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: false
+        datacenter: "{{ vcenter_datacenter }}"
+        folder: "{{ item.folder }}"
+        name: "{{ item.name }}"
+        state: absent
+        snapshot_name: "{{ snapshot_name }}"
+        remove_children: "{{ remove_children }}"
+      loop: "{{ vm_list }}"
+      delegate_to: localhost
