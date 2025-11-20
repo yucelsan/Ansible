@@ -1,1 +1,0 @@
-# Directory renamed from setup_snapshot to setup_vmware
