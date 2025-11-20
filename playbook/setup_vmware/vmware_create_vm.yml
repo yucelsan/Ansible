@@ -1,0 +1,48 @@
+# Pour executer ce playbook avec le fichier crypté host_vars/vmware.yml 
+# ansible-playbook vmware_create_vm.yml --ask-vault-pass
+
+---
+- name: Création d'une VM sans template sur VMware
+  hosts: localhost
+  gather_facts: no
+  collections:
+    - community.vmware
+
+  vars_files:
+    - host_vars/vmware.yml   # vcenter_hostname, vcenter_username, vcenter_password, vcenter_datacenter
+
+  vars:
+    vm_name: "VM-WEBTEST-V01"
+    datacenter: "{{ vcenter_datacenter }}"
+    vm_folder: "/{{ datacenter }}/vm/Serveurs-Linux"
+    cluster: "YN-Cluster"
+    datastore: "YCN2025-volume-DS"
+    network_name: "VM-Network-355"
+    vm_cpu: 2
+    vm_memory: 4096          # Mo
+    vm_disk_size: 100        # Go
+    vm_os: "rhel9_64Guest"   # guest_id VMware (IMPORTANT)
+
+  tasks:
+    - name: Créer une machine virtuelle vide
+      vmware_guest:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: false
+        datacenter: "{{ datacenter }}"
+        folder: "{{ vm_folder }}"
+        name: "{{ vm_name }}"
+        state: poweredoff          # on la laisse éteinte au départ
+        guest_id: "{{ vm_os }}"    # type d'OS attendu
+        cluster: "{{ cluster }}"
+        hardware:
+          num_cpus: "{{ vm_cpu }}"
+          memory_mb: "{{ vm_memory }}"
+        disk:
+          - size_gb: "{{ vm_disk_size }}"
+            datastore: "{{ datastore }}"
+            type: thin
+        networks:
+          - name: "{{ network_name }}"
+      delegate_to: localhost

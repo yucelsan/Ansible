@@ -16,7 +16,7 @@
 <body>
   <h1>Rapport d'audit VMware</h1>
   <p class="tag">
-    Généré par Ansible – vCenter : {{ vcenter_hostname | default('N/A') }}
+    Généré par Ansible – vCenter YUCELSAN : {{ vcenter_hostname | default('N/A') }}
   </p>
 
   <!-- 1. VMs -->
@@ -37,15 +37,28 @@
       <tbody>
       {% for vm in vm_info.virtual_machines | default([]) %}
         {% if vm %}
+        {% set d = vm_details.get(vm.get('guest_name', ''), {}) %}
         <tr>
-          <td>{{ vm.get('name', '') }}</td>
+          <td>{{ vm.get('guest_name', '') }}</td>
           <td>{{ vm.get('power_state', '') }}</td>
-          <td>{{ vm.get('guest_full_name', '') }}</td>
-          <td>{{ vm.get('num_cpu', '') }}</td>
-          <td>{{ vm.get('memory_mb', '') }}</td>
+          <!-- OS -->
           <td>
-            {% if vm.get('ipv4') %}
-              {{ vm.get('ipv4') | join(', ') }}
+            {{ d.get('hw_guest_full_name', vm.get('guest_fullname', '')) }}
+          </td>
+          <!-- CPU -->
+          <td>{{ d.get('hw_processor_count', '') }}</td>
+          <!-- RAM (Mo) -->
+          <td>{{ d.get('hw_memtotal_mb', '') }}</td>
+          <!-- IP(s) -->
+          <td>
+            {% if d.get('ipv4') %}
+              {% if d.get('ipv4') is string %}
+                {{ d.get('ipv4') }}
+              {% else %}
+                {{ d.get('ipv4') | join(', ') }}
+              {% endif %}
+            {% elif vm.get('ip_address') %}
+              {{ vm.get('ip_address') }}
             {% else %}
               -
             {% endif %}

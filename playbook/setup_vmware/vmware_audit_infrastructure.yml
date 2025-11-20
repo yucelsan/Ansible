@@ -35,6 +35,23 @@
       register: datastore_info
       delegate_to: localhost
 
+    - name: Récupérer les infos détaillées pour chaque VM
+      vmware_guest_info:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: false
+        datacenter: "{{ vcenter_datacenter }}"
+        name: "{{ item.guest_name }}"
+      loop: "{{ vm_info.virtual_machines }}"
+      register: vm_details_raw
+      delegate_to: localhost
+
+    - name: Construire un dictionnaire vm_name -> détails
+      set_fact:
+        vm_details: "{{ vm_details | default({}) | combine({ item.item.guest_name: item.instance }) }}"
+      loop: "{{ vm_details_raw.results }}"
+      delegate_to: localhost
 
     - name: Générer le rapport d’audit VMware en JSON
       copy:
